@@ -14,67 +14,72 @@ function wcps_load_plugin_textdomain() {
 // Add jquery to admin page
 add_action( 'admin_enqueue_scripts', 'my_admin_enqueue_scripts' );
 function my_admin_enqueue_scripts($hook) {
-/*  */
+/*	wp_enqueue_script('jquery');
+	wp_enqueue_script('js_ajax', plugins_url( '/js/demo.js' , __FILE__ ) , array( 'jquery' ));
+	wp_localize_script( 'js_ajax', 'MyAjax', array( 'ajaxurl' => admin_url( 'admin-ajax.php')));	
+    wp_enqueue_script( 'chosen', plugin_dir_url( __FILE__ ) . 'js/chosen_v1.3.0/chosen.jquery.min.js', 'jquery', '1.3.0' );*/
 }
+
 add_action('init', 'driver_license');     
 function driver_license() {  
     $args = array(  
-        'label' => __('Car License Quiz', 'driver_license'),  
-        'singular_label' => __('Car License Quiz', 'driver_license'),  
+        'label' => __('Driver Question', 'driver_license'),  
+        'singular_label' => __('Driver Question', 'driver_license'),  
         'public' => true,  
         'show_ui' => true,  
         'capability_type' => 'post',  
         'hierarchical' => false,  
         'rewrite' => true,  
         'supports' => array('title', 'editor', 'thumbnail')  
-       );     
-    register_post_type( 'car_license_quiz' , $args );  
+       );  
+   
+    register_post_type( 'driver_question' , $args );  
 }
-register_taxonomy("car_license_quiz_category", array("car_license_quiz"), array("hierarchical" => true, "label" => __('Car License Quiz Category', 'fahmai'), "singular_label" => __('Car License Quiz Category', 'driver_license'), "rewrite" => false));
+register_taxonomy("driver_question_category", array("driver_question"), array("hierarchical" => true, "label" => __('Driver Question Category', 'fahmai'), "singular_label" => __('Driver Question Category', 'driver_license'), "rewrite" => false));
 ?>
 <?php
 // Add the Meta Box
-add_action('add_meta_boxes', 'add_car_license_quiz_meta_box');
-function add_car_license_quiz_meta_box() {
+add_action('add_meta_boxes', 'add_driver_question_meta_box');
+function add_driver_question_meta_box() {
     add_meta_box(
-        'car_license_quiz_meta_box', // $id
-        'Car License Quiz', // $title 
-        'car_license_quiz_meta_box', // $callback
-        'car_license_quiz', // $page
+        'driver_question_meta_box', // $id
+        'Driver Question', // $title 
+        'driver_question_meta_box', // $callback
+        'driver_question', // $page
         'normal', // $context
         'high'); // $priority
 }
 // Field Array
-$prefix = 'car_license_quiz_';
-$car_license_quiz_meta_fields = array(
+$prefix = 'driver_question_';
+$driver_question_meta_fields = array(
     array(
         'label'=> __('ก.', 'driver_license'),
         'desc'  => __('A.', 'driver_license'),
-        'id'    => $prefix.'quiz_a',
+        'id'    => $prefix.'a',
         'type'  => 'text'
     ),
     array(
         'label'=> __('ข.', 'driver_license'),
         'desc'  => __('B.', 'driver_license'),
-        'id'    => $prefix.'quiz_b',
+        'id'    => $prefix.'b',
         'type'  => 'text'
     ),
     array(
         'label'=> __('ค.', 'driver_license'),
         'desc'  => __('C.', 'driver_license'),
-        'id'    => $prefix.'quiz_c',
+        'id'    => $prefix.'c',
         'type'  => 'text'
     ),
     array(
         'label'=> __('ง.', 'driver_license'),
         'desc'  => __('D.', 'driver_license'),
-        'id'    => $prefix.'quiz_d',
+        'id'    => $prefix.'d',
         'type'  => 'text'
     ),					
     array(
 		'label'=> __('ข้อที่ถูกต้อง', 'driver_license'),
         'desc'  => __('Answers for the exam.', 'driver_license'),
-        'id'    => $prefix.'quiz_answers',
+        'id'    => $prefix.'answers',
         'type'  => 'select',
         'options' => array (
             'one' => array (
@@ -100,14 +105,14 @@ $car_license_quiz_meta_fields = array(
 ?>
 <?php
 // The Callback
-function car_license_quiz_meta_box() {
-global $car_license_quiz_meta_fields, $post;       
+function driver_question_meta_box() {
+global $driver_question_meta_fields, $post;       
 // Use nonce for verification
 echo '<input type="hidden" name="custom_meta_box_nonce" value="'.wp_create_nonce(basename(__FILE__)).'" />';
      
     // Begin the field table and loop
     echo '<table class="form-table">';
-    foreach ($car_license_quiz_meta_fields as $field) {
+    foreach ($driver_question_meta_fields as $field) {
         // get value of this field if it exists for this post
         $meta = get_post_meta($post->ID, $field['id'], true);
         // begin a table row with
@@ -117,23 +122,45 @@ echo '<input type="hidden" name="custom_meta_box_nonce" value="'.wp_create_nonce
                 switch($field['id']) {
                     // case items will go here
 					// text
-					case 'car_license_quiz_quiz_a':
-						echo '<input type="text" name="'.$field['id'].'" id="'.$field['id'].'" value="'.$meta.'" size="30" />
-							<br /><span class="description">'.$field['desc'].'</span>';
+					case 'driver_question_a':
+						//echo '<input type="text" name="'.$field['id'].'" id="'.$field['id'].'" value="'.$meta.'" size="30" />
+							//<br /><span class="description">'.$field['desc'].'</span>';
+						wp_editor( $meta, $field['id'], array(
+							'wpautop'       => true,
+							'media_buttons' => true,
+							'textarea_name' => $field['id'],
+							'textarea_rows' => 10,
+							'teeny'         => true
+						) );							
 					break;
-					case 'car_license_quiz_quiz_b':
-						echo '<input type="text" name="'.$field['id'].'" id="'.$field['id'].'" value="'.$meta.'" size="30" />
-							<br /><span class="description">'.$field['desc'].'</span>';
+					case 'driver_question_b':
+						wp_editor( $meta, $field['id'], array(
+							'wpautop'       => true,
+							'media_buttons' => true,
+							'textarea_name' => $field['id'],
+							'textarea_rows' => 10,
+							'teeny'         => true
+						) );							
 					break;
-					case 'car_license_quiz_quiz_c':
-						echo '<input type="text" name="'.$field['id'].'" id="'.$field['id'].'" value="'.$meta.'" size="30" />
-							<br /><span class="description">'.$field['desc'].'</span>';
+					case 'driver_question_c':
+						wp_editor( $meta, $field['id'], array(
+							'wpautop'       => true,
+							'media_buttons' => true,
+							'textarea_name' => $field['id'],
+							'textarea_rows' => 10,
+							'teeny'         => true
+						) );
 					break;
-					case 'car_license_quiz_quiz_d':
-						echo '<input type="text" name="'.$field['id'].'" id="'.$field['id'].'" value="'.$meta.'" size="30" />
-							<br /><span class="description">'.$field['desc'].'</span>';
+					case 'driver_question_d':
+						wp_editor( $meta, $field['id'], array(
+							'wpautop'       => true,
+							'media_buttons' => true,
+							'textarea_name' => $field['id'],
+							'textarea_rows' => 10,
+							'teeny'         => true
+						) );
 					break;																																																																												
-					case 'car_license_quiz_quiz_answers':// select
+					case 'driver_question_answers':// select
 						echo '<select name="'.$field['id'].'" id="'.$field['id'].'">';
 						foreach ($field['options'] as $option) {
 							echo '<option', $meta == $option['value'] ? ' selected="selected"' : '', ' value="'.$option['value'].'">'.$option['label'].'</option>';
@@ -145,13 +172,14 @@ echo '<input type="hidden" name="custom_meta_box_nonce" value="'.wp_create_nonce
         echo '</td></tr>';
     } // end foreach
     echo '</table>'; // end table
+
 }
 ?>
 <?php   
 // Save the Data
-add_action('save_post', 'save_car_license_quiz_meta_box');
-function save_car_license_quiz_meta_box($post_id) {
-    global $custom_meta_fields;
+add_action('save_post', 'save_driver_question_meta_box');
+function save_driver_question_meta_box($post_id) {
+    global $driver_question_meta_fields;
 	if(!empty($_POST)){     
 		// verify nonce
 		if (!wp_verify_nonce($_POST['custom_meta_box_nonce'], basename(__FILE__))) 
@@ -168,7 +196,7 @@ function save_car_license_quiz_meta_box($post_id) {
 		}
 		 
 		// loop through fields and save the data
-		foreach ($custom_meta_fields as $field) {
+		foreach ($driver_question_meta_fields as $field) {
 			$old = get_post_meta($post_id, $field['id'], true);
 			$new = $_POST[$field['id']];
 			if ($new && $new != $old) {
