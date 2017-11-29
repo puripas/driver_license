@@ -14,10 +14,7 @@ function wcps_load_plugin_textdomain() {
 // Add jquery to admin page
 add_action( 'admin_enqueue_scripts', 'my_admin_enqueue_scripts' );
 function my_admin_enqueue_scripts($hook) {
-/*	wp_enqueue_script('jquery');
-	wp_enqueue_script('js_ajax', plugins_url( '/js/demo.js' , __FILE__ ) , array( 'jquery' ));
-	wp_localize_script( 'js_ajax', 'MyAjax', array( 'ajaxurl' => admin_url( 'admin-ajax.php')));	
-    wp_enqueue_script( 'chosen', plugin_dir_url( __FILE__ ) . 'js/chosen_v1.3.0/chosen.jquery.min.js', 'jquery', '1.3.0' );*/
+/*	*/
 }
 
 add_action('init', 'driver_license');     
