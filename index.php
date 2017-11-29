@@ -14,12 +14,8 @@ function wcps_load_plugin_textdomain() {
 // Add jquery to admin page
 add_action( 'admin_enqueue_scripts', 'my_admin_enqueue_scripts' );
 function my_admin_enqueue_scripts($hook) {
-/*	wp_enqueue_script('jquery');
-	wp_enqueue_script('js_ajax', plugins_url( '/js/demo.js' , __FILE__ ) , array( 'jquery' ));
-	wp_localize_script( 'js_ajax', 'MyAjax', array( 'ajaxurl' => admin_url( 'admin-ajax.php')));	
-    wp_enqueue_script( 'chosen', plugin_dir_url( __FILE__ ) . 'js/chosen_v1.3.0/chosen.jquery.min.js', 'jquery', '1.3.0' );*/
+/*  */
 }
-
 add_action('init', 'driver_license');     
 function driver_license() {  
     $args = array(  
@@ -31,8 +27,7 @@ function driver_license() {
         'hierarchical' => false,  
         'rewrite' => true,  
         'supports' => array('title', 'editor', 'thumbnail')  
-       );  
-   
+       );     
     register_post_type( 'car_license_quiz' , $args );  
 }
 register_taxonomy("car_license_quiz_category", array("car_license_quiz"), array("hierarchical" => true, "label" => __('Car License Quiz Category', 'fahmai'), "singular_label" => __('Car License Quiz Category', 'driver_license'), "rewrite" => false));
@@ -150,7 +145,6 @@ echo '<input type="hidden" name="custom_meta_box_nonce" value="'.wp_create_nonce
         echo '</td></tr>';
     } // end foreach
     echo '</table>'; // end table
-
 }
 ?>
 <?php   
